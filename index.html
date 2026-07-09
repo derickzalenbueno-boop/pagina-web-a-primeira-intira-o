@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bate no Lixo</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:linear-gradient(#87ceeb,#4CAF50);
+    overflow:hidden;
+}
+
+#topo{
+    height:70px;
+    background:#222;
+    color:white;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    font-size:24px;
+}
+
+#campo{
+    position:relative;
+    width:100vw;
+    height:calc(100vh - 70px);
+}
+
+.lixo{
+    position:absolute;
+    font-size:70px;
+    cursor:pointer;
+    user-select:none;
+    transition:transform .15s;
+}
+
+.lixo:hover{
+    transform:scale(1.15);
+}
+
+#fim{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.8);
+    color:white;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    font-size:40px;
+}
+
+button{
+    margin-top:20px;
+    padding:12px 25px;
+    font-size:22px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#4CAF50;
+    color:white;
+}
+</style>
+</head>
+<body>
+
+<div id="topo">
+    <div>🏆 Pontos: <span id="pontos">0</span></div>
+    <div>⏳ Tempo: <span id="tempo">30</span>s</div>
+</div>
+
+<div id="campo">
+    <div id="fim">
+        <div id="resultado"></div>
+        <button onclick="reiniciar()">Jogar Novamente</button>
+    </div>
+</div>
+
+<script>
+
+let pontos=0;
+let tempo=30;
+let jogo;
+
+const campo=document.getElementById("campo");
+
+function criarLixo(){
+
+    const lixo=document.createElement("div");
+    lixo.className="lixo";
+
+    const emojis=["🗑️","🥤","🍌","🧴","📦","🧃","🥫"];
+
+    lixo.innerHTML=emojis[Math.floor(Math.random()*emojis.length)];
+
+    lixo.style.left=Math.random()*(window.innerWidth-100)+"px";
+    lixo.style.top=Math.random()*(window.innerHeight-180)+"px";
+
+    lixo.onclick=()=>{
+
+        pontos++;
+        document.getElementById("pontos").textContent=pontos;
+
+        lixo.style.transform="scale(1.5)";
+        lixo.remove();
+
+    }
+
+    campo.appendChild(lixo);
+
+    setTimeout(()=>{
+        if(lixo.parentNode){
+            lixo.remove();
+        }
+    },1200);
+
+}
+
+function iniciar(){
+
+    jogo=setInterval(criarLixo,450);
+
+    let contador=setInterval(()=>{
+
+        tempo--;
+        document.getElementById("tempo").textContent=tempo;
+
+        if(tempo<=0){
+
+            clearInterval(contador);
+            clearInterval(jogo);
+
+            document.getElementById("resultado").innerHTML=
+            "🎉 Fim de jogo!<br>Pontuação: "+pontos;
+
+            document.getElementById("fim").style.display="flex";
+
+        }
+
+    },1000);
+
+}
+
+function reiniciar(){
+    location.reload();
+}
+
+iniciar();
+
+</script>
+
+</body>
+</html>
